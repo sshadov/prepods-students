@@ -1,29 +1,39 @@
-def average_grade(_dict):
-    a = 0
-    b = 0
-    for x in _dict:
-        a += x
-        b += 1
-        average = a / b
+def average_grade(_dict): #считает среднюю оценку преподавателя/студента
+    summ_grade = 0
+    counter_grade = 0
+    for grade in _dict:
+        summ_grade += grade
+        counter_grade += 1
+        average = summ_grade / counter_grade
     return average
 
-def average_grade_stud(students_list, course):
-    x = 0
-    y = 0
-    for i in students_list:
-        x += i.grades[course]
-        y += 1
-        z = x / y
-    return z
+# def average_grade_stud(students_list, course): #считает среднюю оценку за курс у студентов
+#     summ_grades = 0
+#     counter_grades = 0
+#     for student in students_list:
+#         summ_grades += student.grades[course]
+#         counter_grades += 1
+#         _average_grade = summ_grades / counter_grades
+#     return _average_grade
+#
+# def average_grade_lect(lectors_list, course): #считает среднюю оценку за курс у преподавателей
+#     summ_grades = 0
+#     counter_grades = 0
+#     for lector in lectors_list:
+#         summ_grades += lector.grades[course]
+#         counter_grades += 1
+#         _average_grade = summ_grades / counter_grades
+#     return _average_grade
 
-def average_grade_lect(lectors_list, course):
-    x = 0
-    y = 0
-    for i in lectors_list:
-        x += i.grades[course]
-        y += 1
-        z = x / y
-    return z
+def average_grade_human(humans_list, course): #считает среднюю оценку за курс у списка преподавателей или студентов
+    summ_grades = 0
+    counter_grades = 0
+    for human in humans_list:
+        summ_grades += human.grades[course]
+        counter_grades += 1
+        _average_grade = summ_grades / counter_grades
+    return _average_grade
+
 
 class Student:
     def __init__(self, name, surname, gender):
@@ -34,7 +44,7 @@ class Student:
         self.courses_in_progress = []
         self.grades = {}
 
-    def __str__(self):
+    def __str__(self): #Делаем вывод всех данных о студенте через print()
         # res = print(*self.finished_courses, sep=',')
         res = f'Имя: {self.name} \n ' \
               f'Фамилия: {self.surname}\n ' \
@@ -43,7 +53,7 @@ class Student:
               f'Пройденныея курсы: {", ".join(self.finished_courses)}'
         return res
 
-    def rate_lecturer(self, lecturer, course, grade):
+    def rate_lecturer(self, lecturer, course, grade): #оцениваем лекторов
         if isinstance(lecturer, Lecturer) and (course in self.finished_courses or course in self.courses_in_progress) and course in lecturer.courses_attached:
             if course in lecturer.grades:
                 lecturer.grades[course] += grade
@@ -52,7 +62,7 @@ class Student:
         else:
             print('Ошибка')
 
-    def __lt__(self, other):
+    def __lt__(self, other): #сравниваем студентов по средней оценке
         if not isinstance(other, Student):
             print('Это не студент!')
             return
@@ -72,11 +82,11 @@ class Lecturer(Mentor):
         self.courses_attached = []
         self.grades = {}
 
-    def __str__(self):
+    def __str__(self): #Вывод всех данных о преподавателе через print()
         res = f'Имя: {self.name}\nФамилия: {self.surname}\n Средняя оценка {average_grade(self.grades.values())}'
         return  res
 
-    def __lt__(self, other):
+    def __lt__(self, other): #сравниваем лекторов по средней оценке
         if not isinstance(other, Lecturer):
             print('Это не лектор!')
             return
@@ -88,7 +98,7 @@ class Reviewer(Mentor):
         super().__init__(name,surname)
         self.courses_attached = []
 
-    def rate_hw(self, student, course, grade):
+    def rate_hw(self, student, course, grade): #выставляем студентам оценки за курс
         if isinstance(student, Student) and (course in self.courses_attached) and (course in student.courses_in_progress):
             if course in student.grades:
                 student.grades[course] += grade
@@ -97,7 +107,7 @@ class Reviewer(Mentor):
         else:
             return 'Ошибка'
 
-    def __str__(self):
+    def __str__(self): #вывод данных о ревьювере через print()
         res = f'Имя: {self.name}\nФамилия: {self.surname}'
         return  res
 
@@ -143,5 +153,5 @@ print('Сравнение студентов:', annakarenina > stepanrazin) #с�
 print('__________________')
 print('Сравнение лекторов:', kosanostra > drDulittle) #сравнение средних оценок лекторов
 print('__________________')
-print(average_grade_stud(students_list, 'rzhd')) #средние оценки за курс
-print(average_grade_lect(lectors_list, 'Git'))
+print(average_grade_human(students_list, 'rzhd')) #средние оценки за курс
+print(average_grade_human(lectors_list, 'Git'))
