@@ -1,11 +1,11 @@
-def average_grade(_dict): #считает среднюю оценку преподавателя/студента
-    summ_grade = 0
-    counter_grade = 0
-    for grade in _dict:
-        summ_grade += grade
-        counter_grade += 1
-        average = summ_grade / counter_grade
-    return average
+# def average_grade(_dict): #считает среднюю оценку преподавателя/студента
+#     summ_grade = 0
+#     counter_grade = 0
+#     for grade in _dict:
+#         summ_grade += grade
+#         counter_grade += 1
+#         average = summ_grade / counter_grade
+#     return average
 
 # def average_grade_stud(students_list, course): #считает среднюю оценку за курс у студентов
 #     summ_grades = 0
@@ -44,11 +44,21 @@ class Student:
         self.courses_in_progress = []
         self.grades = {}
 
-    def __str__(self): #Делаем вывод всех данных о студенте через print()
+    def average_grade(self):  # считает среднюю оценку студента
+        values = self.grades.values()
+        summ_grade = 0
+        counter_grade = 0
+        for grade in values:
+            summ_grade += grade
+            counter_grade += 1
+            average = summ_grade / counter_grade
+        return average
+
+    def __str__(self): #Делаем вывод всех данных о студенте через print() {average_grade(self.grades.values())}
         # res = print(*self.finished_courses, sep=',')
         res = f'Имя: {self.name} \n ' \
               f'Фамилия: {self.surname}\n ' \
-              f'Средняя оценка за домашнии задания: {average_grade(self.grades.values())}\n ' \
+              f'Средняя оценка за домашнии задания: {self.average_grade()}\n ' \
               f'Курсы в процессе изучения: {", ".join(self.courses_in_progress)}\n ' \
               f'Пройденныея курсы: {", ".join(self.finished_courses)}'
         return res
@@ -66,7 +76,7 @@ class Student:
         if not isinstance(other, Student):
             print('Это не студент!')
             return
-        return average_grade(self.grades.values()) < average_grade(other.grades.values())
+        return self.average_grade() < other.average_grade()
 
 class Mentor:
     def __init__(self, name, surname):
@@ -82,21 +92,33 @@ class Lecturer(Mentor):
         self.courses_attached = []
         self.grades = {}
 
+    def average_grade(self):  # считает среднюю оценку преподаватедя
+        values = self.grades.values()
+        summ_grade = 0
+        counter_grade = 0
+        for grade in values:
+            summ_grade += grade
+            counter_grade += 1
+            average = summ_grade / counter_grade
+        return average
+
     def __str__(self): #Вывод всех данных о преподавателе через print()
-        res = f'Имя: {self.name}\nФамилия: {self.surname}\n Средняя оценка {average_grade(self.grades.values())}'
+        res = f'Имя: {self.name}\nФамилия: {self.surname}\n Средняя оценка {self.average_grade()}'
         return  res
 
     def __lt__(self, other): #сравниваем лекторов по средней оценке
         if not isinstance(other, Lecturer):
             print('Это не лектор!')
             return
-        return average_grade(self.grades.values()) < average_grade(other.grades.values())
+        return self.average_grade() < self.average_grade()
 
 
 class Reviewer(Mentor):
     def __init__(self, name, surname):
         super().__init__(name,surname)
         self.courses_attached = []
+
+
 
     def rate_hw(self, student, course, grade): #выставляем студентам оценки за курс
         if isinstance(student, Student) and (course in self.courses_attached) and (course in student.courses_in_progress):
